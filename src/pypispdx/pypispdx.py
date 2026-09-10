@@ -30,7 +30,7 @@ from spdx_tools.spdx.writer.write_anything import write_file
 SPDX_VERSION = "SPDX-2.3"
 DATA_LICENSE = "CC0-1.0"
 SPDX_DOCUMENT_REF = "SPDXRef-DOCUMENT"
-VERSION = "0.3.1"
+VERSION = "0.3.2"
 CREATOR_TOOL = f"pypispdx - {VERSION}"
 LICENSE_LIST_VERSION = "3.28"
 CISA_SBOM_TYPE = "Analyzed"
@@ -213,7 +213,7 @@ def get_pypi_package_copyright(package_name: str, version: str, debug_mode: bool
     url = f"{CLEARLYDEFINED}/pypi/pypi/-/{package_name}/{version}"
 
     try:
-        response = requests.get(url, timeout=30)
+        response = requests.get(url, timeout=300)
         response.raise_for_status()
         data = response.json()
 
@@ -227,7 +227,13 @@ def get_pypi_package_copyright(package_name: str, version: str, debug_mode: bool
         core = facets.get("core", {})
         attribution = core.get("attribution", {})
 
-        return attribution.get("parties", [])
+        copyright = attribution.get("parties", [])
+
+        # Sanitize copyright by removing "<text>" and "</text>"
+        copyright = [copy.replace("<text>", "") for copy in copyright]
+        copyright = [copy.replace("</text>", "") for copy in copyright]
+
+        return copyright
 
     except requests.exceptions.RequestException:
         print(f"Could not get Copyright for {package_name} version {version}", file=sys.stderr)
@@ -277,7 +283,7 @@ def get_clearlydefined_package_license(package_name: str, version: str) -> str:
     url = f"{CLEARLYDEFINED}/pypi/pypi/-/{package_name}/{version}"
 
     try:
-        response = requests.get(url, timeout=30)
+        response = requests.get(url, timeout=300)
         response.raise_for_status()
         data = response.json()
 

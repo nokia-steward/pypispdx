@@ -159,6 +159,11 @@ The SBOM cannot be created as ```google-ads-reports``` cannot currently be insta
 
 # History
 
+What is new in version 0.3.2
+
+* Sanitize copyright obtained by ClearlyDefined by removing "<text>" and "</text>"
+* Longer timeout for ClearlyDefined
+
 What is new in version 0.3.1
 
 * Simpler URIs (remove "SPDXRef-")
