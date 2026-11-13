@@ -104,6 +104,19 @@ is retreived from the license file and put in the SBOM.
 
 See for example [infinity-grid](https://pypi.org/project/infinity-grid/).
 
+## Relationships
+
+The SBOM contains a relationship DESCRIBES from the SBOM to the main package.
+
+In releases up to 0.3.2, there are CONTAINS relationships from the main package to all other packages.
+
+Starting from release 0.3.3, these relationships are DEPENDS_ON.
+
+This is done to be compatible with 2026 CISA Minimum Elements.
+
+We now have an option `--ntia` that will create CONTAINS relationships as before, to be compatible
+with NTIA Minimum Elements.
+
 ## About PURL specification
 
 The name is case insensitive and lowercased.
@@ -118,7 +131,9 @@ Dot “.” is replaced with dash “-”.
 
 The SBOM is valid SPDX 2.3.
 
-It is compliant with the [OpenChain Telco SBOM Guide](https://github.com/OpenChain-Project/Telco-WG/blob/main/OpenChain-Telco-SBOM-Guide_EN.md).
+It is compliant with the [OpenChain Telco SBOM Guide](https://github.com/OpenChain-Project/Telco-WG/blob/main/OpenChain-Telco-SBOM-Guide_EN.md) version 1.1.
+
+It might not be compliant with OpenChain Telco SBOM Guide version 1.2 as in some cases the Component Hash Value cannot be determined. See `cronsim` as an example.
 
 You can check it with the [openchain-telco-sbom-validator](https://pypi.org/project/openchain-telco-sbom-validator/).
 
@@ -126,9 +141,7 @@ You can check it with the [openchain-telco-sbom-validator](https://pypi.org/proj
 
 The SBOM is valid SPDX 3.0.1.
 
-You can check it with:
-* https://github.com/spdx/tools-java (in Java)
-* https://pypi.org/project/spdx3-validate/ (in Python)
+The compliance with OpenChain Telco SBOM Guide is the same as for SPDX 2.3.
 
 ## When an SBOM cannot be created
 
@@ -158,6 +171,12 @@ Cannot create SBOM for google-ads-reports
 The SBOM cannot be created as ```google-ads-reports``` cannot currently be installed with Python 3.14.
 
 # History
+
+What is new in version 0.3.3
+
+* Use DEPENDS_ON relationship by default to be compliant with 2026 CISA Minimum Elements
+* New option "--ntia" to use CONTAINS relationship as before, to be compliant with NTIA Minimum Elements
+* Update SPDX license list to 3.29
 
 What is new in version 0.3.2
 

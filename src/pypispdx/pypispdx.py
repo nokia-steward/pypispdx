@@ -30,7 +30,7 @@ from spdx_tools.spdx.writer.write_anything import write_file
 SPDX_VERSION = "SPDX-2.3"
 DATA_LICENSE = "CC0-1.0"
 SPDX_DOCUMENT_REF = "SPDXRef-DOCUMENT"
-VERSION = "0.3.2"
+VERSION = "0.3.3"
 CREATOR_TOOL = f"pypispdx - {VERSION}"
 LICENSE_LIST_VERSION = "3.29"
 CISA_SBOM_TYPE = "Analyzed"
@@ -817,6 +817,11 @@ def main():
         help="Enable debug output, including detailed messages and full tracebacks."
     )
     parser.add_argument(
+        "--ntia",
+        action="store_true",
+        help="Use CONTAINS relationship to be compliant with NTIA Minimum Elements."
+    )
+    parser.add_argument(
         "--version", "-v",
         action="version",
         version=f"%(prog)s {VERSION}",
@@ -852,6 +857,7 @@ def main():
 
     main_package_name = args.package_name
     debug_mode = args.debug
+    ntia = args.ntia
 
     if args.spdx3:
         spdx3 = True
@@ -977,16 +983,25 @@ def main():
                 dep_name_dashed = dash_name(dep["name"])
                 if dep_name_dashed != main_package_dashed:
                     if not spdx3:
-                        sbom.write(f"Relationship: SPDXRef-{main_package_dashed} CONTAINS SPDXRef-{dep_name_dashed}\n")
+                        if ntia:
+                            sbom.write(f"Relationship: SPDXRef-{main_package_dashed} CONTAINS SPDXRef-{dep_name_dashed}\n")
+                        else:
+                            sbom.write(f"Relationship: SPDXRef-{main_package_dashed} DEPENDS_ON SPDXRef-{dep_name_dashed}\n")
                     else:
                         if not first:
                             sbom.write(',\n')
                         else:
                             first = False
                         sbom.write('        {\n')
-                        sbom.write(f'            "spdxId": "https://pypi.org/contains-{dep_name_dashed}",\n')
+                        if ntia:
+                            sbom.write(f'            "spdxId": "https://pypi.org/contains-{dep_name_dashed}",\n')
+                        else:
+                            sbom.write(f'            "spdxId": "https://pypi.org/dependsOn-{dep_name_dashed}",\n')
                         sbom.write('            "type": "Relationship",\n')
-                        sbom.write('            "relationshipType": "contains",\n')
+                        if ntia:
+                            sbom.write('            "relationshipType": "contains",\n')
+                        else:
+                            sbom.write('            "relationshipType": "dependsOn",\n')
                         sbom.write(f'            "from": "https://spdx.org/spdxdocs/{main_package_dashed}",\n')
                         sbom.write('            "to": [\n')
                         sbom.write(f'                "https://spdx.org/spdxdocs/{dep_name_dashed}"\n')
