@@ -851,7 +851,7 @@ def main():
     spdxformat.add_argument(
         "--spdx3",
         action="store_true",
-        help="Output the result in SPDX 3.0.1 JSON format."
+        help="Output the result in SPDX 3.0.1 JSON-LD format."
     )
     args = parser.parse_args()
 
