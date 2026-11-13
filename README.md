@@ -5,7 +5,7 @@ An SCA tool for creating an SPDX SBOM for a https://pypi.org/ package.
 # Usage
 
 ```
-usage: pypispdx [-h] [--json | --rdf | --xml | --yaml | --spdx3] [--debug] package
+usage: pypispdx [-h] [--json | --rdf | --xml | --yaml | --spdx3] [--debug] [--ntia] package
 ```
 
 where “package” is a Python package available on https://pypi.org/
@@ -20,6 +20,7 @@ options:
   --xml                 Output the result in SPDX 2.3 XML format.
   --yaml                Output the result in SPDX 2.3 YAML format.
   --spdx3               Output the result in SPDX 3.0.1 JSON-LD format.
+  --ntia                Use CONTAINS relationship to be compliant with NTIA Minimum Elements.
 ```
 
 It will create an SPDX 2.3 or 3.0.1 SBOM for the latest available release of the package,
